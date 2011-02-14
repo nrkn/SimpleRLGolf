@@ -1,0 +1,53 @@
+SimpleRLGolf:
+  Implementing SimpleRL in as few bytes as possible!
+
+More about Golf:
+  http://codegolf.com/
+
+SimpleRL:
+  https://github.com/nrkn/SimpleRL
+  
+Please, only Golf with languages that already exist in SimpleRL and if your 
+chosen language isn't there, you can always fork SimpleRL, add it and send me a 
+pull request, or email to nrkn.com@gmail.com and I'll add it for you.
+
+Requirements:
+  Must display the following map:
+    ####  ####
+    #  #  #  #
+    #  ####  #
+    #        #
+    ##      ##
+     #      #
+     #      #
+    ##      ##
+    #        #
+    #  ####  #
+    #  #  #  #
+    ####  ####
+    
+  Player starts at zero-based location {x: 2, y: 2}
+  
+  Map and player are drawn before the player provides any input
+  
+  Must provide a way for the user to move the player around the map, preferably
+  the arrow keys
+  
+  Walls block the player
+   
+  In languages that don't have built in/portable IO feel free to include a 
+  dependency such as curses, but document it in your readme so people can get 
+  your code to work. Please use a common dependency, writing your own that is 
+  deliberately very terse is against the spirit of the challenge
+    http://en.wikipedia.org/wiki/Curses_%28programming_library%29
+   
+  End of file markers don't contribute towards size, using unicode chars which 
+  are more than one byte do
+
+  It is more important to follow these in spirit than in letter :)
+    http://en.wikipedia.org/wiki/Letter_and_spirit_of_the_law
+
+Providing a pretty printed, commented version alongside your minified version
+would be nice but not required
+
+I'm going to kick this off with a C# version weighing in at 384 bytes
