@@ -1,0 +1,25 @@
+<pre>
+<script>
+  p=(d=document).body.children[0];
+  m='#### #  ###    ##    #   ';
+  x=2;y=3;  
+  function t(e){
+    u=x;
+    v=y;
+    k=e?e.keyCode-36:0;    
+    k%2<1?v+=k<3?-1:1:u+=k<2?-1:1;
+    if(m[w(v)*5+w(u)]==' '){
+      x=u;
+      y=v
+    }    
+    p.innerHTML='';
+    for(j=0;j<10;j++)
+      for(i=0;i<10;i++)
+        p.innerHTML+=i==x&&j==y?'@':m[w(j)*5+w(i)]+(i>8?'\n':'')
+  }  
+  function w(i){
+    return i<5?i:5-i+4
+  }  
+  d.addEventListener('keyup',t,0);
+  t()
+</script>
