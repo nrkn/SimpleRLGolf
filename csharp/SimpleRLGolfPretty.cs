@@ -56,8 +56,7 @@ class S {
       //  else right, add 1 to u     
       //
       //this actually lets you enter input with all sorts of keys 
-      //other than arrows but so long as q quits and arrows move
-      //doesn't matter
+      //other than arrows but so long as arrows move it doesn't matter
       k = k % 2 < 1 ? v += k < 3 ? -1 : 1 : u += k < 2 ? -1 : 1;
 
       //if map is empty at u, v then set x, y to u, v
@@ -85,7 +84,7 @@ class S {
     C.Write( c );
   }
 
-  //we only store once corner of the map, if we want a location
+  //we only store one corner of the map, if we want a location
   //that's out of bounds this uses a mirror copy of that corner
   int W( int i ) {
     return i < 5 ? i : 5 - i + 4;
