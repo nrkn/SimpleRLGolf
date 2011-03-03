@@ -2,8 +2,7 @@
 # comments here are just to document tricks specific to the ruby version
 
 require "curses"
-# load the Curses class into a local and global var (it's cheaper to use both)
-include $a = a = Curses
+include Curses
 
 def w( i )
   i < 5 ? i : 5 - i + 4
@@ -15,7 +14,7 @@ for j in 0..9
   for i in 0..9
     # use input record seperator $/ instead of "\n"
     # see http://ruby.runpaint.org/globals
-    a.addstr $m[ w(j) * 5 + w(i) ].chr + ( i > 8 ? $/ : "" )
+    addstr $m[ w(j) * 5 + w(i) ].chr + ( i > 8 ? $/ : "" )
   end
 end
 
@@ -23,8 +22,8 @@ $x = $y = 2
 
 # draw tile
 def d( t = "@" )
-  $a.setpos $y, $x
-  $a.addstr t
+  setpos $y, $x
+  addstr t
 end
 
 # move player
@@ -33,9 +32,9 @@ def m( x, y )
   $x, $y = x,y if $m[ w(y) * 5 + w(x) ] == 32
 end
 
-s = a.init_screen
-a.noecho
-a.curs_set 0
+s = init_screen
+noecho
+curs_set 0
 # use 1 instead of TRUE
 s.keypad 1
 d
