@@ -39,7 +39,7 @@ curs_set 0
 s.keypad 1
 d
 
-until ( c = s.getch ) == ?q
+loop do
   # use character codes instead of KEY_UP, KEY_DOWN etc.
   k = { 259 => [$x, $y - 1],
         258 => [$x, $y + 1],
