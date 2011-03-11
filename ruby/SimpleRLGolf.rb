@@ -1,1 +1,10 @@
-require "curses";include Curses;def w(i);i<5?i:5-i+4;end;$m="#### #  ###    ##    #   ";for j in 0..9;for i in 0..9;addstr $m[w(j)*5+w(i)].chr+(i>8?$/:"");end;end;$x=$y=2;def d(t="@");setpos $y,$x;addstr t;end;def m(x,y);$x,$y=x,y if $m[w(y)*5+w(x)]==32;end;s=init_screen;noecho;curs_set 0;s.keypad 1;d;loop{c=s.getch;k={259=>[$x,$y-1],258=>[$x,$y+1],260=>[$x-1,$y],261=>[$x+1,$y]};d " ";m *k[c] if k[c];d}
+require 'curses';include Curses
+def d t=?@;setpos $y||=2,$x||=2;addch(t);end
+s=init_screen;noecho;curs_set(0);s.keypad(1)
+b=0xf3e798070340902c0e019e7cf.to_s(2).tr('01',' #').scan /.{10}/
+addstr b*$/;d
+while c=s.getch
+v='5317'[c-258]-?0 rescue exit
+x,y=$x+v/3-1,$y+v%3-1
+if b[y][x]==32;d 32;$x,$y=x,y;d;end
+end
