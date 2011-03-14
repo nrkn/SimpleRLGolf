@@ -1,51 +1,50 @@
-# see the c# version for a fuller description of what's going on
-# comments here are just to document tricks specific to the ruby version
-
-require "curses"
+# Load up the curses library.  Using #include allows us to use the module's
+# methods without the Curses:: prefix.
+require 'curses'
 include Curses
 
-def w( i )
-  i < 5 ? i : 5 - i + 4
+# This method draws a single character at the current cursor position.  The
+# cursor position is represented by a single integer, you can think of the 
+# tens digit representing y-position while the ones digit represents x-position.
+#
+# The character to be drawn defaults to an '@', but another can be specified
+# by either a single-character string or an ascii code.
+def d t=?@
+  setpos $p/10, $p%10
+  addch t
 end
 
-$m="#### #  ###    ##    #   "
-
-for j in 0..9
-  for i in 0..9
-    # use input record seperator $/ instead of "\n"
-    # see http://ruby.runpaint.org/globals
-    addstr $m[ w(j) * 5 + w(i) ].chr + ( i > 8 ? $/ : "" )
-  end
-end
-
-$x = $y = 2
-
-# draw tile
-def d( t = "@" )
-  setpos $y, $x
-  addstr t
-end
-
-# move player
-def m( x, y )
-  # 32 is the character code for a whitespace
-  $x, $y = x,y if $m[ w(y) * 5 + w(x) ] == 32
-end
-
+# Basic curses initialization
 s = init_screen
 noecho
 curs_set 0
-# use 1 instead of TRUE
 s.keypad 1
+
+# b is the game board in a one-dimensional array.  It is created by taking a
+# constant hex value and converting that into its binary representation in
+# string form.  Then every zero in the string is replaced with a blank space
+# and every 1 is replaced with a hash.
+b = 0xf3e798070340902c0e019e7cf.to_s(2).tr '01',' #'
+
+# Draw the board to the screen, assume rows of 10 characters.
+addstr b.scan(/.{10}/)*$/
+
+# Set the initial player position to {2,2}, counting from the top-left.
+$p=22
+
+# Draw the player to the screen.
 d
 
-loop do
-  # use character codes instead of KEY_UP, KEY_DOWN etc.
-  k = { 259 => [$x, $y - 1],
-        258 => [$x, $y + 1],
-        260 => [$x - 1, $y],
-        261 => [$x + 1, $y] }
-  d " "
-  m *k[c] if k[c]
+# Main game loop:
+#  * Get a keypress from curses as an integer keycode.
+#  * Subtract 258 (KEY_DOWN) from it and use the result as an index into an
+#    array of movement options; [10,-10,-1,1]
+#  * On any other input, exit the program.
+while v=$p+'aMVX'[s.getch-258]-?W rescue exit
+  # Clear the tile the player is standing on (32 is ascii space)
+  d 32
+  # If the spot the player wants to move to (v) is clear, update $p
+  $p=v if b[v]==32
+  # Redraw the player in the new spot (or old spot if he did not move)
   d
 end
