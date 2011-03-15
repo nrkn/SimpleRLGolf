@@ -2,91 +2,61 @@
 using C = System.Console;
 //class containing Main can be called anything
 class S {
-  //only x and y used outside main loop but it's cheaper to init all at once
-  //k = last key value
-  //u & v = temporary storage for x & y
-  //x & y = player location
-  int k, u, v, x, y;
-
-  //if we put the code in Main we'd have to make local members static
-  //it's cheaper to have the constructor and new it up
-  S() {
-    //we only need the top left part of the map
-    //method W derives the other 4 corners of the map from this
-    //this string is 5 rows of 5 columns run together
-    var m = "#### #  ###    ##    #   ";
-
-    //draw the map
-    //don't need to init y, it's already 0
-    for( ; y < 10; y++ )
-      //but need to init x each time through
-      for( x = 0; x < 10; x++ )
-        //draw map at x, y
-        D( m[ W( y ) * 5 + W( x ) ] );
-
-    //initial player location
-    x = y = 2;
-    
-    //draw @ for first time
-    D();
-    
-    //cheapest infinite loop (well, weighs the same as a goto :P)
-    for( ; ; ) {
-      //subtract 36 from the int value of the keypress
-      //it's cheaper to test against single digit numbers
-      k = (int) C.ReadKey( true ).Key - 36;
-
-      //make a copy of x and y
-      u = x;
-      v = y;
-      
-      //blank out the player location
-      D( ' ' );
-
-      //test the key entered and modify u or v accordingly
-      //we only assign back to k to trick the compiler into
-      //letting us use a ternary instead of an if/else because
-      //even with the extra 'k =' we save several bytes that way
-      //read the ternary like this:
-      //if k % 2 then up or down was pressed
-      //  if k is 2 then up, minus 1 from v 
-      //  else must be down (4), add 1 to v
-      //else must be left or right
-      //  if k is 1 then left, minus 1 from u
-      //  else right, add 1 to u     
-      //
-      //this actually lets you enter input with all sorts of keys 
-      //other than arrows but so long as arrows move it doesn't matter
-      k = k % 2 < 1 ? v += k < 3 ? -1 : 1 : u += k < 2 ? -1 : 1;
-
-      //if map is empty at u, v then set x, y to u, v
-      if( m[ W( v ) * 5 + W( u ) ] == ' ' ) {
-        x = u;
-        y = v;
-      }
-      
-      //draw the @
-      D();
-    }
-  }
-
-  //doesn't need to be public and doesn't need args
-  static void Main() {
-    //run the game!
-    new S();
-  }
+  //p = position
+  //v is counter in first loop and temporary position
+  //x and y are used to get the offset into the string holding 1 corner of the map
+  //t is an alias for 10 as 10 gets used often enough to warrant aliasing it
+  static int p, v, x, y, t = 10;
 
   //draw the passed in char at the current player location
   //use a default value for '@' to save a couple of bytes
   //as we call D with '@' twice
-  void D( char c = '@' ) {
-    C.SetCursorPosition( x, y );
+  //because p is a number 0 to 99 we can get the x and y
+  //from it using mod and integer division
+  static void D( char c = '@' ) {
+    C.SetCursorPosition( p % t, p / t );
     C.Write( c );
   }
 
-  //we only store one corner of the map, if we want a location
-  //that's out of bounds this uses a mirror copy of that corner
-  int W( int i ) {
-    return i < 5 ? i : 5 - i + 4;
+  //doesn't need to be public and doesn't need args
+  static void Main() {
+    var s = "";
+
+    //we have 100 map squares
+    for( ; v < 100; v++ )
+      //draw the result of the following expression
+      D( 
+        ( 
+        //add a character from the following string to s  
+        s += 
+            "#### #  ###    ##    #   "[ 
+              //the position in the string to add to s...
+              //we get x and y by transforming the value (v) 0-99 into a x or y coord
+              //then we see if it's outside the corner 5x5 grid that the string above represents,
+              //and we wrap it back to a coordinate that does exist
+              ( ( y = v / t ) < 5 ? y : 5 - y + 4 ) * 5 + ( ( x = v % t ) < 5 ? x : 5 - x + 4 ) 
+            ] 
+        )
+        //now that we've added the current character to s, we get the index of v in s and set p to it
+        //so that the drawing function knows what it is
+        [ p = v ] 
+      );
+
+    //set p back to the player starting position 2,2
+    p = 22;
+
+    //use the pre and post expressions to draw an @ before the loop starts and at the end of each loop
+    for( D(); ; D() ) {
+      //the 1 > 0 in the readkey stops readkey echoing back the key pressed, it's shorter than the bool literal true
+      //we deduct 37 from the key pressed and get an int from 0-3 depending on which arrow key was pressed
+      //we've set up an array where that number corresponds to a number with which to modify the position
+      //we set v to the position modified by the array member referred to by the keypress
+      //this means that any other key will throw an exception, effecting exiting the game
+      v = p + new[] { -1, -t, 1, t }[ (int) C.ReadKey( 1 > 0 ).Key - 37 ];
+      //draw a blank over the tile the player is currently on
+      D( ' ' );
+      //update the position if it's possible to move there
+      p = s[ v ] == ' ' ? v : p;
+    }
   }
 }
