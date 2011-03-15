@@ -38,13 +38,12 @@ d
 # Main game loop:
 #  * Get a keypress from curses as an integer keycode.
 #  * Subtract 258 (KEY_DOWN) from it and use the result as an index into an
-#    array of movement options; [10,-10,-1,1]
-#  * On any other input, exit the program.
-while v=$p+'aMVX'[s.getch-258]-?W rescue exit
+#    array of movement options
+while v=$p+[10,-10,-1,1][s.getch-258]
   # Clear the tile the player is standing on (32 is ascii space)
   d 32
   # If the spot the player wants to move to (v) is clear, update $p
-  $p=v if b[v]==32
+  $p=v if b[v]==' '
   # Redraw the player in the new spot (or old spot if he did not move)
   d
 end
