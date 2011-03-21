@@ -39,7 +39,7 @@ d
 #  * Get a keypress from curses as an integer keycode.
 #  * Subtract 258 (KEY_DOWN) from it and use the result as an index into an
 #    array of movement options
-while v=$p+[10,-10,-1,1][s.getch-258]
+while v=$p+[10,-10,-1,1][s.getch%6]
   # Clear the tile the player is standing on (32 is ascii space)
   d 32
   # If the spot the player wants to move to (v) is clear, update $p
