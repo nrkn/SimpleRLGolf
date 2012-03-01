@@ -42,8 +42,8 @@ d
 while v=$p+[10,-10,-1,1][s.getch%6]
   # Clear the tile the player is standing on (32 is ascii space)
   d 32
-  # If the spot the player wants to move to (v) is clear, update $p
-  $p=v if b[v]==' '
+  # If the spot the player wants to move to (v) is not a wall character, update $p
+  $p=v if b[v]<?#
   # Redraw the player in the new spot (or old spot if he did not move)
   d
 end
