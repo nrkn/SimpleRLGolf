@@ -3,21 +3,24 @@
 m = "#### #  ###    ##    #   ";
 x = 2;
 y = 3;
-function t(a) {
+
+function t( a ){
   u = x;
   v = y;
   k = a ? a.keyCode - 36 : 0;
   1 > k % 2 ? v += 3 > k ? -1 : 1 : u += 2 > k ? -1 : 1;
-  " " == m[5 * w(v) + w(u)] && (x = u, y = v);
+  " " == m[ 5 * w( v ) + w( u ) ] && ( x = u, y = v );
   h = "";
-  for(j = 0;10 > j;j++) 
-    for(i = 0;10 > i;i++)
-      h += i == x && j == y ? "@" : m[5 * w(j) + w(i)] + (8 < i ? "\n" : "");
-  ( d = document ).body.firstChild.innerHTML = h;
+  for( j = 0; 10 > j; j++ )
+    for( i = 0; 10 > i; i++ )
+      h += i == x && j == y ? "@" : m[ 5 * w( j ) + w( i ) ] + ( 8 < i ? "\n" : "" );
+  ( d = document ).body.firstChild.innerHTML = h;               
   d.onkeyup = t
 }
-function w(a) {
+
+function w( a ){
   return 5 > a ? a : 5 - a + 4
 }
+
 t()
 </script>
